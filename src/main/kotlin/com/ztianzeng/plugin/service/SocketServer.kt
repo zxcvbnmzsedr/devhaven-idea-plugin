@@ -71,11 +71,12 @@ class SocketServer {
                     val writer = PrintWriter(clientSocket.getOutputStream(), true)
 
                     val request = reader.readLine()
-                    
+
                     if (request == "GET_PROJECTS") {
+                        println("Received request: GET_PROJECTS")
                         val service = ProjectMonitorService.getInstance()
                         val projects = service.getOpenProjects()
-                        
+
                         val gson = Gson()
                         val response = gson.toJson(mapOf("projects" to projects))
                         writer.println(response)
@@ -86,4 +87,4 @@ class SocketServer {
             }
         }
     }
-} 
+}

@@ -22,13 +22,15 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.ztianzeng.plugin.service.ProjectMonitorService"/>
-        <applicationService serviceImplementation="com.ztianzeng.plugin.service.SocketServerService"/>
-        <applicationListener implementation="com.ztianzeng.plugin.listener.AppShutdownListener"/>
+        <postStartupActivity implementation="com.ztianzeng.plugin.listener.ProjectOpenListener"/>
     </extensions>
+    <applicationListeners>
+        <listener class="com.ztianzeng.plugin.listener.AppStartupListener"
+                  topic="com.intellij.ide.AppLifecycleListener"/>
+    </applicationListeners>
 
     <projectListeners>
-        <listener class="com.ztianzeng.plugin.listener.ProjectListener"
+        <listener class="com.ztianzeng.plugin.listener.ProjectCloseListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
 </idea-plugin>

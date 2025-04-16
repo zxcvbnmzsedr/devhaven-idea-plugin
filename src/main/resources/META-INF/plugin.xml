@@ -1,22 +1,19 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.ztianzeng.plugin.devhaven</id>
+    <id>com.ztianzeng.plugin</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>Devhaven</name>
+    <name>Project Monitor</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="support@ztianzeng.com" url="http://www.ztianzeng.com">ZTianzeng</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
-    <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-  ]]></description>
+    <description><![CDATA[ 实时监控和上报IDEA打开的项目列表 ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
@@ -25,6 +22,13 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-
+        <applicationService serviceImplementation="com.ztianzeng.plugin.service.ProjectMonitorService"/>
+        <applicationService serviceImplementation="com.ztianzeng.plugin.service.SocketServerService"/>
+        <applicationListener implementation="com.ztianzeng.plugin.listener.AppShutdownListener"/>
     </extensions>
+
+    <projectListeners>
+        <listener class="com.ztianzeng.plugin.listener.ProjectListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
 </idea-plugin>

@@ -19,6 +19,12 @@ intellij {
 
     plugins.set(listOf(/* Plugin Dependencies */))
 }
+dependencies {
+//    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+//    implementation("org.json:json:20240303")
+    implementation("net.java.dev.jna:jna:5.13.0") // 或更新的版本
+    implementation("net.java.dev.jna:jna-platform:5.13.0") // 或更新的版本
+}
 
 tasks {
     // Set the JVM compatibility versions

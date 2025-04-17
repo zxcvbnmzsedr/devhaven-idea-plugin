@@ -14,10 +14,6 @@ import java.util.*
 @Service(Service.Level.APP)
 class ProjectMonitorService {
     private val projectManager = ProjectManager.getInstance()
-    private val editInfoMap = mutableMapOf<String, EditInfo>()  // 项目路径 -> 编辑信息
-
-    data class EditInfo(val filePath: String, val line: Int, val column: Int)
-
     fun removeProject(project: Project) {
         val filePath: Path = getCacheDir()
         println("Projects directory: $filePath")
@@ -48,12 +44,19 @@ class ProjectMonitorService {
         projectManager.openProjects.forEach { addProject(it) }
     }
 
-    fun updateEditInfo(project: Project, filePath: String, line: Int, column: Int) {
-        val basePath = project.basePath ?: return
-        // 存储编辑信息
-        editInfoMap[basePath] = EditInfo(filePath, line, column)
-        // 更新项目信息文件
-        addProject(project)
+    fun updateEditInfo(project: Project, editFile: String, line: Int, column: Int) {
+        val filePath: Path = getCacheDir()
+        //  根据base64编码项目路径创建文件,防止操作系统的问题导致文件名乱码
+        val projectFile = filePath.resolve(
+            "EDIT-FILE-" + Base64.getEncoder().encodeToString(project.basePath?.toByteArray())
+        )
+        val res = HashMap<String, Any>()
+        res["filePath"] = editFile
+        res["line"] = line
+        res["column"] = column
+        val gson = Gson()
+        val json = gson.toJson(res)
+        Files.write(projectFile, json.toByteArray())
     }
 
     fun addProject(project: Project) {
@@ -63,12 +66,12 @@ class ProjectMonitorService {
         val projectFile = filePath.resolve(
             applicationInfo.versionName + "-" + Base64.getEncoder().encodeToString(project.basePath?.toByteArray())
         )
-        
+
         // 检查文件是否存在，如果存在先删除
         if (Files.exists(projectFile)) {
             Files.delete(projectFile)
         }
-        
+
         try {
             Files.createFile(projectFile)
             println("Created file: $projectFile")
@@ -79,18 +82,7 @@ class ProjectMonitorService {
             projectInfoMap["basePath"] = project.basePath ?: ""
             projectInfoMap["isDefault"] = project.isDefault
             projectInfoMap["ide"] = applicationInfo.versionName
-            
-            // 添加编辑信息
-            project.basePath?.let { basePath ->
-                editInfoMap[basePath]?.let { editInfo ->
-                    val editInfoMap = HashMap<String, Any>()
-                    editInfoMap["filePath"] = editInfo.filePath
-                    editInfoMap["line"] = editInfo.line
-                    editInfoMap["column"] = editInfo.column
-                    projectInfoMap["editInfo"] = editInfoMap
-                }
-            }
-            
+
             val json = gson.toJson(projectInfoMap)
             Files.write(projectFile, json.toByteArray())
         } catch (e: IOException) {

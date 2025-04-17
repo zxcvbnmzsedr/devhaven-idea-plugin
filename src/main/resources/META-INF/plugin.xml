@@ -32,5 +32,9 @@
     <projectListeners>
         <listener class="com.ztianzeng.plugin.listener.ProjectCloseListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
+        <listener class="com.ztianzeng.plugin.listener.EditorActivityListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+        <listener class="com.ztianzeng.plugin.listener.EditorCaretListenerFactory"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
     </projectListeners>
 </idea-plugin>
